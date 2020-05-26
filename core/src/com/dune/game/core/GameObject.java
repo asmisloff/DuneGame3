@@ -6,6 +6,8 @@ public abstract class GameObject {
     protected GameController gc;
     protected Vector2 position;
     protected Vector2 tmp;
+    protected int diameter;
+
 
     public Vector2 getPosition() {
         return position;
@@ -15,5 +17,9 @@ public abstract class GameObject {
         this.gc = gc;
         this.position = new Vector2();
         this.tmp = new Vector2();
+    }
+
+    public int getDiameter() {
+        return diameter;
     }
 }

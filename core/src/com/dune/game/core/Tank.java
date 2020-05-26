@@ -3,7 +3,6 @@ package com.dune.game.core;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -26,6 +25,7 @@ public class Tank extends GameObject {
         this.speed = 120.0f;
         this.timePerFrame = 0.08f;
         this.rotationSpeed = 90.0f;
+        this.diameter = 64;
     }
 
     private int getCurrentFrameIndex() {
@@ -62,10 +62,12 @@ public class Tank extends GameObject {
 
             moveTimer += dt;
             tmp.set(speed, 0).rotate(angle);
+
             position.mulAdd(tmp, dt);
             if (position.dst(destination) < 120.0f && Math.abs(angleTo - angle) > 10) {
                 position.mulAdd(tmp, -dt);
             }
+            gc.onGameObjectPositionChanged(this);
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.K)) {
             fire();
@@ -96,4 +98,5 @@ public class Tank extends GameObject {
     public void render(SpriteBatch batch) {
         batch.draw(textures[getCurrentFrameIndex()], position.x - 40, position.y - 40, 40, 40, 80, 80, 1, 1, angle);
     }
+
 }
