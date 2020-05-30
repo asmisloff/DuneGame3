@@ -3,7 +3,7 @@ images1.png
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
-spice
+resource
   rotate: false
   xy: 2, 2
   size: 80, 80
@@ -43,5 +43,12 @@ bullet
   xy: 2, 84
   size: 16, 16
   orig: 16, 16
+  offset: 0, 0
+  index: -1
+progressbar
+  rotate: false
+  xy: 20, 84
+  size: 60, 8
+  orig: 60, 8
   offset: 0, 0
   index: -1
