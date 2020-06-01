@@ -1,5 +1,6 @@
 package com.dune.game.core;
 
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class TanksController extends ObjectPool<Tank> {
@@ -14,9 +15,9 @@ public class TanksController extends ObjectPool<Tank> {
         this.gc = gc;
     }
 
-    public void render(SpriteBatch batch) {
+    public void render(SpriteBatch batch, BitmapFont font) {
         for (int i = 0; i < activeList.size(); i++) {
-            activeList.get(i).render(batch);
+            activeList.get(i).render(batch, font);
         }
     }
 
@@ -31,4 +32,5 @@ public class TanksController extends ObjectPool<Tank> {
         }
         checkPool();
     }
+
 }
