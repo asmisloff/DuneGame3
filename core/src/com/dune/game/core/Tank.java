@@ -1,9 +1,5 @@
 package com.dune.game.core;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -16,10 +12,12 @@ public class Tank extends GameObject implements Poolable {
     private Owner ownerType;
     private Weapon weapon;
     private Vector2 destination;
+    private Vector2 tmp;
     private TextureRegion[] textures;
     private TextureRegion[] weaponsTextures;
 
     private TextureRegion progressbarTexture;
+
     private int hp;
     private int hpMax;
     private float angle;
@@ -66,6 +64,7 @@ public class Tank extends GameObject implements Poolable {
 
         this.timePerFrame = 0.08f;
         this.rotationSpeed = 90.0f;
+        this.tmp = new Vector2();
     }
 
     public void setup(Owner ownerType, float x, float y) {
@@ -113,10 +112,15 @@ public class Tank extends GameObject implements Poolable {
 
     public void commandMoveTo(Vector2 point) {
         destination.set(point);
+//        System.out.printf("Destination: %f, %f", point.x, point.y);
     }
 
     public void commandAttack(Tank target) {
         this.target = target;
+    }
+
+    public void releaseTarget() {
+        target = null;
     }
 
     public void updateWeapon(float dt) {
@@ -125,9 +129,15 @@ public class Tank extends GameObject implements Poolable {
             weapon.setAngle(rotateTo(weapon.getAngle(), angleTo, 180.0f, dt));
             int power = weapon.use(dt);
             if (power > -1) {
-                gc.getProjectilesController().setup(position, weapon.getAngle());
+                tmp.set(1, 0).rotate(weapon.getAngle()).scl(32);
+                gc.getProjectilesController().setup(tmp.add(position), weapon.getAngle(), this);
             }
         }
+
+        if (target == null) {
+            weapon.setAngle(rotateTo(weapon.getAngle(), this.angle, 180.0f, dt));
+        }
+
         if (weapon.getType() == Weapon.Type.HARVEST) {
             if (gc.getMap().getResourceCount(this) > 0) {
                 int result = weapon.use(dt);
@@ -188,5 +198,13 @@ public class Tank extends GameObject implements Poolable {
             srcAngle -= 360.0f;
         }
         return srcAngle;
+    }
+
+    public int decreaseHP(int damage) {
+        return (hp -= damage);
+    }
+
+    public boolean isAlive() {
+        return hp > 0;
     }
 }

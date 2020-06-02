@@ -4,14 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class GameController {
     private BattleMap map;
@@ -61,6 +58,7 @@ public class GameController {
         projectilesController.update(dt);
         map.update(dt);
         checkCollisions(dt);
+        checkHits();
         // checkSelection();
     }
 
@@ -76,6 +74,26 @@ public class GameController {
                     t2.moveBy(tmp);
                     tmp.scl(-1);
                     t1.moveBy(tmp);
+                }
+            }
+        }
+    }
+
+    private void checkHits() {
+        for (int i = 0; i < projectilesController.activeSize(); i++) {
+            Projectile p = projectilesController.getActiveList().get(i);
+            for (int j = 0; j < tanksController.activeSize(); j++) {
+                Tank tank = tanksController.getActiveList().get(j);
+                if (tank == p.getGun()) {
+                    continue;
+                }
+                if (tank.position.dst(p.position) < 32) {
+                    int hp = tank.decreaseHP(p.getDamage());
+                    p.deactivate();
+                    if (hp <= 0) {
+                        tanksController.free(j);
+                        p.getGun().releaseTarget();
+                    }
                 }
             }
         }
