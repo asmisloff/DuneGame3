@@ -91,7 +91,7 @@ public class GameController {
                     int hp = tank.decreaseHP(p.getDamage());
                     p.deactivate();
                     if (hp <= 0) {
-                        tanksController.free(j);
+                        tanksController.free(j--);
                         p.getGun().releaseTarget();
                     }
                 }
