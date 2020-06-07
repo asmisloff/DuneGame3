@@ -53,7 +53,7 @@ public class TanksController extends ObjectPool<Tank> {
         if (Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
             for (int i = 0; i < gc.getSelectedUnits().size(); i++) {
                 Tank t = gc.getSelectedUnits().get(i);
-                if (t.getOwnerType() == Tank.Owner.PLAYER && gc.getSelectedUnits().contains(t)) {
+                if (t.getOwnerType() == Tank.Owner.PLAYER /*&& gc.getSelectedUnits().contains(t)*/) {
                     tmp.set(Gdx.input.getX(), 720 - Gdx.input.getY());
                     if (t.getWeapon().getType() == Weapon.Type.HARVEST) {
                         t.commandMoveTo(tmp);
@@ -61,9 +61,12 @@ public class TanksController extends ObjectPool<Tank> {
                     if (t.getWeapon().getType() == Weapon.Type.GROUND) {
                         Tank aiTank = gc.getTanksController().getNearestAiTank(tmp);
                         if (aiTank == null) {
+//                            System.out.println("Command: move");
+                            t.releaseTarget();
                             t.commandMoveTo(tmp);
                         } else {
                             t.commandAttack(aiTank);
+//                            System.out.println("Command: attack");
                         }
                     }
                 }
