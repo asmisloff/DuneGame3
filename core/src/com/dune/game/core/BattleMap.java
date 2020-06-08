@@ -1,10 +1,11 @@
 package com.dune.game.core;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.dune.game.core.units.BattleTank;
+import com.dune.game.core.units.Harvester;
 
 public class BattleMap {
     private class Cell {
@@ -16,7 +17,7 @@ public class BattleMap {
         public Cell(int cellX, int cellY) {
             this.cellX = cellX;
             this.cellY = cellY;
-            if(MathUtils.random() < 0.1f) {
+            if (MathUtils.random() < 0.1f) {
                 resource = MathUtils.random(1, 3);
             }
             resourceRegenerationRate = MathUtils.random(5.0f) - 4.5f;
@@ -53,9 +54,11 @@ public class BattleMap {
         }
     }
 
-    public static final int COLUMNS_COUNT = 16;
-    public static final int ROWS_COUNT = 9;
+    public static final int COLUMNS_COUNT = 20;
+    public static final int ROWS_COUNT = 12;
     public static final int CELL_SIZE = 80;
+    public static final int MAP_WIDTH_PX = COLUMNS_COUNT * CELL_SIZE;
+    public static final int MAP_HEIGHT_PX = ROWS_COUNT * CELL_SIZE;
 
     private TextureRegion grassTexture;
     private TextureRegion resourceTexture;
@@ -72,18 +75,22 @@ public class BattleMap {
         }
     }
 
-    public int getResourceCount(Tank harvester) {
-        return cells[harvester.getCellX()][harvester.getCellY()].resource;
+    public int getResourceCount(Vector2 point) {
+        int cx = (int) (point.x / CELL_SIZE);
+        int cy = (int) (point.y / CELL_SIZE);
+        return cells[cx][cy].resource;
     }
 
-    public int harvestResource(Tank harvester, int power) {
+    public int harvestResource(Vector2 point, int power) {
         int value = 0;
-        if(cells[harvester.getCellX()][harvester.getCellY()].resource >= power) {
+        int cx = (int) (point.x / CELL_SIZE);
+        int cy = (int) (point.y / CELL_SIZE);
+        if (cells[cx][cy].resource >= power) {
             value = power;
-            cells[harvester.getCellX()][harvester.getCellY()].resource -= power;
+            cells[cx][cy].resource -= power;
         } else {
-            value = cells[harvester.getCellX()][harvester.getCellY()].resource;
-            cells[harvester.getCellX()][harvester.getCellY()].resource = 0;
+            value = cells[cx][cy].resource;
+            cells[cx][cy].resource = 0;
         }
         return value;
     }
