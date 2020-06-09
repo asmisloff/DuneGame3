@@ -4,7 +4,6 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.dune.game.screens.GameScreen;
 import com.dune.game.screens.ScreenManager;
 
 public class DuneGame extends Game {

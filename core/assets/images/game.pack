@@ -10,21 +10,21 @@ simpleButton
   orig: 320, 80
   offset: 0, 0
   index: -1
-shortButton
+storage
   rotate: false
   xy: 2, 84
   size: 80, 80
   orig: 80, 80
   offset: 0, 0
   index: -1
-resource
+shortButton
   rotate: false
   xy: 2, 166
   size: 80, 80
   orig: 80, 80
   offset: 0, 0
   index: -1
-receivingcenter
+resource
   rotate: false
   xy: 84, 84
   size: 80, 80

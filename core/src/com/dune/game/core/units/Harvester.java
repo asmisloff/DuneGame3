@@ -2,10 +2,7 @@ package com.dune.game.core.units;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import com.dune.game.core.Assets;
-import com.dune.game.core.GameController;
-import com.dune.game.core.Targetable;
-import com.dune.game.core.Weapon;
+import com.dune.game.core.*;
 
 public class Harvester extends AbstractUnit {
     public Harvester(GameController gc) {
@@ -29,16 +26,28 @@ public class Harvester extends AbstractUnit {
     }
 
     public void updateWeapon(float dt) {
-        if (gc.getMap().getResourceCount(position) > 0) {
-            int result = weapon.use(dt);
-            if (result > -1) {
-                container += gc.getMap().harvestResource(position, result);
-                if (container > containerCapacity) {
-                    container = containerCapacity;
-                }
-            }
-        } else {
+        int cnt = gc.getMap().getResourceCount(position);
+        if (cnt == 0 || (cnt == -1 && container == 0)) {
             weapon.reset();
+            return;
+        }
+
+        int result = weapon.use(dt);
+        if (result == -1) {
+            return;
+        }
+
+        int amount = gc.getMap().harvestResource(position, result);
+        container += amount;
+
+        if (container > containerCapacity) {
+            container = containerCapacity;
+        } else if (container < 0) {
+            amount -= container;
+            container = 0;
+        }
+        if (amount < 0) {
+            gc.onResourcesUnloaded(this, -amount);
         }
     }
 

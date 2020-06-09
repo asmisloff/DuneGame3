@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.dune.game.core.gui.GuiPlayerInfo;
 import com.dune.game.core.units.AbstractUnit;
+import com.dune.game.core.units.Harvester;
 import com.dune.game.screens.ScreenManager;
 
 import java.util.ArrayList;
@@ -240,5 +241,10 @@ public class GameController {
         stage.addActor(guiPlayerInfo);
         stage.addActor(menuGroup);
         skin.dispose();
+    }
+
+    public void onResourcesUnloaded(Harvester harvester, int amount) {
+
+        playerLogic.setMoney(playerLogic.getMoney() + amount);
     }
 }
