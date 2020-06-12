@@ -3,6 +3,10 @@ package com.dune.game.core.units;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.dune.game.core.*;
+import com.dune.game.core.interfaces.Targetable;
+import com.dune.game.core.units.types.UnitType;
+import com.dune.game.core.users_logic.BaseLogic;
+import com.dune.game.screens.utils.Assets;
 
 public class Harvester extends AbstractUnit {
     public Harvester(GameController gc) {
@@ -18,36 +22,25 @@ public class Harvester extends AbstractUnit {
     }
 
     @Override
-    public void setup(Owner ownerType, float x, float y) {
+    public void setup(BaseLogic baseLogic, float x, float y) {
         this.position.set(x, y);
-        this.ownerType = ownerType;
+        this.baseLogic = baseLogic;
+        this.ownerType = baseLogic.getOwnerType();
         this.hp = this.hpMax;
         this.destination = new Vector2(position);
     }
 
     public void updateWeapon(float dt) {
-        int cnt = gc.getMap().getResourceCount(position);
-        if (cnt == 0 || (cnt == -1 && container == 0)) {
+        if (gc.getMap().getResourceCount(position) > 0) {
+            int result = weapon.use(dt);
+            if (result > -1) {
+                container += gc.getMap().harvestResource(position, result);
+                if (container > containerCapacity) {
+                    container = containerCapacity;
+                }
+            }
+        } else {
             weapon.reset();
-            return;
-        }
-
-        int result = weapon.use(dt);
-        if (result == -1) {
-            return;
-        }
-
-        int amount = gc.getMap().harvestResource(position, result);
-        container += amount;
-
-        if (container > containerCapacity) {
-            container = containerCapacity;
-        } else if (container < 0) {
-            amount -= container;
-            container = 0;
-        }
-        if (amount < 0) {
-            gc.onResourcesUnloaded(this, -amount);
         }
     }
 
@@ -65,6 +58,15 @@ public class Harvester extends AbstractUnit {
             batch.setColor(1.0f, 1.0f, 0.0f, 1.0f);
             batch.draw(progressbarTexture, position.x - 30, position.y + 24, 60 * weapon.getUsageTimePercentage(), 4);
             batch.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+        }
+    }
+
+    public void update(float dt) {
+        super.update(dt);
+        Building b = gc.getMap().getBuildingEntrance(getCellX(), getCellY());
+        if (b != null && b.getType() == Building.Type.STOCK && b.getOwnerLogic() == this.baseLogic) {
+            baseLogic.addMoney(container * 100);
+            container = 0;
         }
     }
 }
