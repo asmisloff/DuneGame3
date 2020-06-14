@@ -35,4 +35,14 @@ public class BuildingsController extends ObjectPool<Building> {
         }
         checkPool();
     }
+
+    public Building getStorage(BaseLogic logic) {
+        for (int j = 0; j < activeSize(); j++) {
+            Building b = activeList.get(j);
+            if (b.getType() == Building.Type.STOCK && b.getOwnerLogic().getOwnerType() == logic.getOwnerType()) {
+                return b;
+            }
+        }
+        return null;
+    }
 }
