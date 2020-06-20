@@ -22,6 +22,7 @@ public class Building extends GameObject implements Poolable {
     private int hpMax;
     private int hp;
     private int cellX, cellY;
+    private Vector2 tmp;
 
     @Override
     public boolean isActive() {
@@ -40,6 +41,7 @@ public class Building extends GameObject implements Poolable {
         super(gc);
         this.texture = Assets.getInstance().getAtlas().findRegion("grass");
         this.textureWorldPosition = new Vector2();
+        this.tmp = new Vector2();
     }
 
     public void setup(BaseLogic ownerLogic, int cellX, int cellY) {
@@ -78,5 +80,9 @@ public class Building extends GameObject implements Poolable {
             }
         }
         gc.getMap().setupBuildingEntrance(cellX, cellY - 1, null);
+    }
+
+    public Vector2 getEntrancePosition() {
+        return tmp.set(position).add(0, -BattleMap.CELL_SIZE);
     }
 }

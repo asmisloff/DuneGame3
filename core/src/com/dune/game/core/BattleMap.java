@@ -7,21 +7,22 @@ import com.badlogic.gdx.math.Vector2;
 import com.dune.game.screens.utils.Assets;
 
 public class BattleMap {
-    private class Cell {
+    public class Cell {
         private Building buildingEntrance;
-        private int cellX, cellY;
+        private int cellX;
+        private int cellY;
         private int resource;
         private float resourceRegenerationRate;
         private float resourceRegenerationTime;
         private boolean groundPassable;
 
-        public Cell(int cellX, int cellY) {
+        private Cell(int cellX, int cellY) {
             this.cellX = cellX;
             this.cellY = cellY;
-            if (MathUtils.random() < 0.1f) {
+            if (MathUtils.random() < 0.05f) {
                 resource = MathUtils.random(1, 3);
             }
-            resourceRegenerationRate = MathUtils.random(5.0f) - 4.5f;
+            resourceRegenerationRate = MathUtils.random(5.0f) - 4.9f;
             if (resourceRegenerationRate < 0.0f) {
                 resourceRegenerationRate = 0.0f;
             } else {
@@ -55,14 +56,34 @@ public class BattleMap {
             }
         }
 
-        public void blockGroundPass() {
+        private void blockGroundPass() {
             groundPassable = false;
             resourceRegenerationRate = 0.0f;
             resource = 0;
         }
 
-        public void unblockGroundPass() {
+        private void unblockGroundPass() {
             groundPassable = true;
+        }
+
+        public int getCellX() {
+            return cellX;
+        }
+
+        public int getCellY() {
+            return cellY;
+        }
+
+        public int getResource() {
+            return resource;
+        }
+
+        public float getX() {
+            return cellX * CELL_SIZE + CELL_SIZE / 2;
+        }
+
+        public float getY() {
+            return cellY * CELL_SIZE + CELL_SIZE / 2;
         }
     }
 
@@ -74,7 +95,8 @@ public class BattleMap {
 
     private TextureRegion grassTexture;
     private TextureRegion resourceTexture;
-    private Cell[][] cells;
+
+    private final Cell[][] cells;
 
     public void blockGroundCell(int cellX, int cellY) {
         cells[cellX][cellY].blockGroundPass();
@@ -147,5 +169,9 @@ public class BattleMap {
 
     public Building getBuildingEntrance(int cellX, int cellY) {
         return cells[cellX][cellY].buildingEntrance;
+    }
+
+    public Cell[][] getCells() {
+        return cells;
     }
 }
